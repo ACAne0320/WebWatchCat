@@ -9,7 +9,7 @@ import time
 
 URL = 'https://jxjyxy.hunnu.edu.cn/xsxw/xwbk.htm'
 hash_file_path = 'hash_file.txt'
-TO_EMAIL = os.getenv('RECIPIENT_EMAIL','844670992@qq.com')
+TO_EMAIL = os.getenv('RECIPIENT_EMAIL','1603705341@qq.com')
 
 # 配置邮件发送
 def send_email(subject, body, to_email):
@@ -57,8 +57,7 @@ def monitor_website(url, hash_file_path, to_email):
         # 发送邮件通知
         send_email(
             subject='亲爱的cjy,网站更新啦~',
-            body=f'''网站更新啦！
-                     请前往查看：{url}''',
+            body=f'''网站更新啦！\n请前往查看：{url}''',
             to_email=to_email
         )
         print('发送成功!')

@@ -1,8 +1,8 @@
-import requests
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import hashlib
+import urllib
 import os
 
 from get_weather_info import get_current_weather, get_weather_suggestion
@@ -31,25 +31,38 @@ def send_email(subject, body, to_email):
     server.sendmail(from_email, to_email, text)
     server.quit()
 
-# 获取网页内容并计算哈希值
-def get_page_hash(url):
-    response = requests.get(url)
-    page_content = response.text
-    return hashlib.md5(page_content.encode('utf-8')).hexdigest()
+def get_list_content(url):
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+    req = urllib.request.Request(url, headers=headers)
+    
+    with urllib.request.urlopen(req) as response:
+        html = response.read().decode('utf-8')
+        
+        # 提取 list01 的内容
+        start = html.find('<div class="list01">')
+        end = html.find('</div>', start)
+        if start != -1 and end != -1:
+            list_content = html[start:end]
+            return list_content
+    return None
+
+def calculate_hash(content):
+    # 计算内容的哈希值
+    return hashlib.md5(content.encode('utf-8')).hexdigest()
 
 # 监控网页并检测更新
 def monitor_website(url, hash_file_path, to_email):
     # 如果之前没有保存哈希值文件，则初始化
     if not os.path.exists(hash_file_path):
         with open(hash_file_path, 'w') as f:
-            f.write(get_page_hash(url))
+            f.write(calculate_hash(get_list_content(url)))
 
     # 读取之前的哈希值
     with open(hash_file_path, 'r') as f:
         old_hash = f.read()
 
     # 获取当前网页的哈希值
-    current_hash = get_page_hash(url)
+    current_hash = calculate_hash(get_list_content(url))
 
     # 如果哈希值不同，说明网页内容更新了
     if current_hash != old_hash:
@@ -68,7 +81,6 @@ def monitor_website(url, hash_file_path, to_email):
         with open(hash_file_path, 'w') as f:
             f.write(current_hash)
     else:
-        # 发送邮件通知
         send_email(
             subject='亲爱的怡宝,报考网站信息还没更新哦~',
             body=(
@@ -78,7 +90,7 @@ def monitor_website(url, hash_file_path, to_email):
             ),
             to_email=to_email
         )
-        print('未检测到更新')
+        print('发送成功！未检测到更新。')
 
 # 定时任务
 def main():

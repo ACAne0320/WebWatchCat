@@ -28,6 +28,7 @@ jobs:
       env:
         EMAIL_USER: ${{ secrets.EMAIL_USER }}
         EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}  # 接收通知的邮箱
+        RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        SENIVERSE_API_KEY: ${{ secrets.SENIVERSE_API_KEY }}
       run: |
         python monitor_script.py

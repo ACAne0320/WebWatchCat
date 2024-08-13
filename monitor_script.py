@@ -4,19 +4,18 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import hashlib
 import os
-import ssl
-import time
+
+from get_weather_info import get_current_weather, get_weather_suggestion
 
 URL = 'https://jxjyxy.hunnu.edu.cn/xsxw/xwbk.htm'
 hash_file_path = 'hash_file.txt'
-TO_EMAIL = os.getenv('RECIPIENT_EMAIL','1603705341@qq.com')
+TO_EMAIL = os.getenv('RECIPIENT_EMAIL')
 
 # 配置邮件发送
 def send_email(subject, body, to_email):
     # 从环境变量中获取邮箱信息
     from_email = os.getenv('EMAIL_USER')
     from_password = os.getenv('EMAIL_PASSWORD')
-    
 
     msg = MIMEMultipart()
     msg['From'] = from_email
@@ -56,8 +55,12 @@ def monitor_website(url, hash_file_path, to_email):
     if current_hash != old_hash:
         # 发送邮件通知
         send_email(
-            subject='亲爱的cjy,网站更新啦~',
-            body=f'''网站更新啦！\n请前往查看：{url}''',
+            subject='亲爱的怡宝,报考网站信息更新啦~',
+            body=(
+                f"网站更新啦！\n请前往查看: {url}"
+                f"当前天气信息: \n{get_current_weather()}"
+                f"天气建议: \n{get_weather_suggestion()}"
+            ),
             to_email=to_email
         )
         print('发送成功!')
@@ -65,6 +68,16 @@ def monitor_website(url, hash_file_path, to_email):
         with open(hash_file_path, 'w') as f:
             f.write(current_hash)
     else:
+        # 发送邮件通知
+        send_email(
+            subject='亲爱的怡宝,报考网站信息还没更新哦~',
+            body=(
+                "报考网站信息还没更新哦,请耐心等待~\n"
+                f"今天天气信息: \n{get_current_weather()}"
+                f"相关建议: \n{get_weather_suggestion()}"
+            ),
+            to_email=to_email
+        )
         print('未检测到更新')
 
 # 定时任务

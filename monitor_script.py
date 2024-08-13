@@ -57,7 +57,7 @@ def monitor_website(url, hash_file_path, to_email):
         send_email(
             subject='亲爱的怡宝,报考网站信息更新啦~',
             body=(
-                f"网站更新啦！\n请前往查看: {url}"
+                f"网站更新啦！\n请前往查看: {url}\n"
                 f"当前天气信息: \n{get_current_weather()}"
                 f"天气建议: \n{get_weather_suggestion()}"
             ),

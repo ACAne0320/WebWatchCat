@@ -2,8 +2,8 @@ name: Monitor Website
 
 on:
   schedule:
-    # 每天 UTC 时间的 00:00 执行任务
-    - cron: '0 0 * * *'
+    # 每天 UTC-8 时间的 09:00 执行任务
+    - cron: '0 17 * * *'
   workflow_dispatch:  # 允许手动触发
 
 jobs:
@@ -28,6 +28,6 @@ jobs:
       env:
         EMAIL_USER: ${{ secrets.EMAIL_USER }}
         EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        RECIPIENT_EMAIL: nyaashino@gmail.com  # 接收通知的邮箱
+        RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}  # 接收通知的邮箱
       run: |
         python monitor_script.py

@@ -2,7 +2,7 @@ import os
 import requests
 
 API_KEY = os.getenv("SENIVERSE_API_KEY")
-LOCATION = "guangzhou"
+LOCATION = "changsha"
 BASE_URL = "https://api.seniverse.com/v3"
 
 def fetch_data(endpoint, params):

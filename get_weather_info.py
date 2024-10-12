@@ -33,7 +33,8 @@ def get_current_weather():
         )
         print(summary)
         return summary
-    return "获取当前天气信息失败。"
+    else:
+        return "获取当前天气信息失败。"
 
 def get_weather_suggestion():
     params = {
@@ -61,4 +62,5 @@ def get_weather_suggestion():
         )
         print(summary)
         return summary
-    return "获取天气建议失败。"
+    else:
+        return "获取天气建议失败。"
